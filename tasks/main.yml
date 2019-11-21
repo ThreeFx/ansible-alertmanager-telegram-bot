@@ -1,0 +1,61 @@
+---
+- name: Fail when telegram variables undefined
+  fail:
+    msg: You must define alertmanager_telegram_bot_admin and alertmanager_telegram_bot_token
+  when: alertmanager_telegram_bot_admin == "" or alertmanager_telegram_bot_token == ""
+
+- name: Install dependencies
+  become: True
+  apt:
+    name:
+      - acl
+
+- name: Create service user
+  become: True
+  user:
+    name: "{{ alertmanager_telegram_bot_user }}"
+    home: "/home/{{ alertmanager_telegram_bot_user }}"
+    createhome: yes
+
+- name: Create directory
+  become: True
+  become_user: "{{ alertmanager_telegram_bot_user }}"
+  file:
+    path: "/home/{{ alertmanager_telegram_bot_user }}/alertmanager-bot"
+    state: directory
+
+- name: Download alertmanager-bot
+  become: true
+  become_user: "{{ alertmanager_telegram_bot_user }}"
+  get_url:
+    url: "https://github.com/metalmatze/alertmanager-bot/releases/download/{{ alertmanager_telegram_bot_version }}/alertmanager-bot-{{ alertmanager_telegram_bot_version }}-linux-amd64"
+    checksum: "{{ alertmanager_telegram_bot_checksum }}"
+    dest: "/home/{{ alertmanager_telegram_bot_user }}/alertmanager-bot/alertmanager-bot"
+    mode: 0700
+
+- name: Create environment file
+  become: True
+  become_user: "{{ alertmanager_telegram_bot_user }}"
+  template:
+    src: environment.j2
+    dest: "/home/{{ alertmanager_telegram_bot_user }}/alertmanager-bot/environment"
+    mode: 0600
+  notify: restart alertmanager-bot
+
+- name: Create default template
+  become: True
+  become_user: "{{ alertmanager_telegram_bot_user }}"
+  template:
+    src: default.tmpl.j2
+    dest: "/home/{{ alertmanager_telegram_bot_user }}/alertmanager-bot/default.tmpl"
+    mode: 0644
+  notify: restart alertmanager-bot
+
+- name: Create systemd service
+  become: true
+  template:
+    src: alertmanager-bot.service.j2
+    dest: /etc/systemd/system/alertmanager-bot.service
+  notify:
+    - reload systemd
+    - restart alertmanager-bot

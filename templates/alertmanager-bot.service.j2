@@ -1,0 +1,13 @@
+[Unit]
+Description=A telegram bot backend for alertmanager
+
+[Service]
+Type=simple
+User={{ alertmanager_telegram_bot_user }}
+Group=nogroup
+EnvironmentFile=/home/{{ alertmanager_telegram_bot_user }}/alertmanager-bot/environment
+WorkingDirectory=/home/{{ alertmanager_telegram_bot_user }}/alertmanager-bot
+ExecStart=/home/{{ alertmanager_telegram_bot_user }}/alertmanager-bot/alertmanager-bot
+
+[Install]
+WantedBy=multi-user.target

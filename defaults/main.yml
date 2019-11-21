@@ -1,0 +1,11 @@
+---
+alertmanager_telegram_bot_admin: ""
+alertmanager_telegram_bot_token: ""
+
+alertmanager_telegram_bot_version: "0.4.0"
+alertmanager_telegram_bot_checksum: "sha256:1f2f7c741267db386f7fadc5758636e22ca27bc3f22c6da4fa278ca88e2c148c"
+
+alertmanager_telegram_bot_alertmanager_url: "http://127.0.0.1:9093"
+alertmanager_telegram_bot_listen_addr: "127.0.0.1:18000"
+
+alertmanager_telegram_bot_user: "alertmanager-bot"

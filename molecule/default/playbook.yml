@@ -1,0 +1,8 @@
+---
+- name: Converge
+  hosts: all
+  roles:
+    - role: alertmanager-telegram-bot
+      vars:
+        alertmanager_telegram_bot_admin: "123456"
+        alertmanager_telegram_bot_token: "207564629:AAH1vGcp_Nhbc2rcA9OLHk73dpPmxjYgi_Q"
